@@ -20,10 +20,11 @@ subroutine setup_sirius()
   use lsda_mod, only : lsda, nspin, starting_magnetization
   use cell_base, only : omega
   use ldaU, only : lda_plus_U, Hubbard_J, Hubbard_U, Hubbard_alpha, &
-       & Hubbard_beta, is_Hubbard, lda_plus_u_kind, Hubbard_J0, U_projection
+       & Hubbard_beta, is_Hubbard, lda_plus_u_kind, Hubbard_J0, U_projection, Hubbard_l
   use symm_base, only : nosym
   use spin_orb,  only : lspinorb
   use esm,       only : esm_local, esm_bc, do_comp_esm
+
   implicit none
   !
   integer :: dims(3), i, ia, iat, rank, ierr, ijv, ik, li, lj, mb, nb, j, l,&
@@ -33,6 +34,8 @@ subroutine setup_sirius()
   integer, allocatable :: nk_loc(:)
   integer :: lmax_beta, zn
   logical(C_BOOL) bool_var
+  INTEGER,EXTERNAL           :: set_hubbard_l,set_hubbard_n
+
   !
   ! create context of simulation
   call sirius_create_simulation_context(c_str('{"parameters" : {"electronic_structure_method" : &
@@ -221,8 +224,10 @@ subroutine setup_sirius()
     enddo
 
     if (is_hubbard(iat)) then
-       call sirius_set_atom_type_hubbard(c_str(atm(iat)), Hubbard_U(iat), Hubbard_J(1,iat), &
-            &angle1(iat), angle2(iat), Hubbard_alpha(iat), Hubbard_beta(iat), Hubbard_J0(iat))
+       call sirius_set_atom_type_hubbard(c_str(atm(iat)), Hubbard_l(iat), &
+            set_hubbard_n(upf(iat)%psd), upf(iat)%oc(iwf), &
+            Hubbard_U(iat), Hubbard_J(1,iat), &
+            Hubbard_alpha(iat), Hubbard_beta(iat), Hubbard_J0(iat))
     endif
 
     allocate(dion(upf(iat)%nbeta, upf(iat)%nbeta))
