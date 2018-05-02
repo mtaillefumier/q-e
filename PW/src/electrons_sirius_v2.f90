@@ -124,6 +124,11 @@ subroutine electrons_sirius_v2(scf_step)
        else
           call sirius_get_hubbard_occupancies(rho%ns(1,1,1,1), i)
        endif
+       IF (noncolin) THEN
+          CALL write_ns_nc()
+       ELSE
+          CALL write_ns()
+       ENDIF
 !       call sirius_calculate_hubbard_potential()
     ENDIF
     ! initialize effective potential from SIRIUS density

@@ -30,7 +30,7 @@ SUBROUTINE forces()
   !
   USE kinds,         ONLY : DP
   USE io_global,     ONLY : stdout
-  USE cell_base,     ONLY : at, bg, alat, omega  
+  USE cell_base,     ONLY : at, bg, alat, omega
   USE ions_base,     ONLY : nat, ntyp => nsp, ityp, tau, zv, amass, extfor, atm
   USE fft_base,      ONLY : dfftp
   USE gvect,         ONLY : ngm, gstart, ngl, igtongl, g, gg, gcutm, mill
@@ -103,7 +103,7 @@ SUBROUTINE forces()
   !
   ALLOCATE( forcenl( 3, nat ), forcelc( 3, nat ), forcecc( 3, nat ), &
             forceh( 3, nat ), forceion( 3, nat ), forcescc( 3, nat ) )
-  !    
+  !
   forcescc(:,:) = 0.D0
   forceh(:,:)   = 0.D0
   force (:,:)   = 0.D0
@@ -132,7 +132,7 @@ SUBROUTINE forces()
     enddo
     ! set XC potential
     call sirius_set_pw_coeffs(c_str("vxc"), vxc_g(1), ngm, mill(1, 1), intra_bgrp_comm)
-    
+
     !
     ! vnew is V_out - V_in, psic is the temp space
     !
@@ -175,7 +175,7 @@ SUBROUTINE forces()
   ! ... The Hubbard contribution
   !     (included by force_us if using beta as local projectors)
   !
-  IF ( lda_plus_u .AND. U_projection.NE.'pseudo' .and. .not. use_sirius) CALL force_hub( forceh )
+  IF ( lda_plus_u .AND. U_projection.NE.'pseudo') CALL force_hub( forceh )
   !
   ! ... The ionic contribution is computed here
   !
@@ -283,7 +283,7 @@ SUBROUTINE forces()
         IF ( tefield ) force(ipol,na) = force(ipol,na) + forcefield(ipol,na)
         IF ( gate ) force(ipol,na) = force(ipol,na) + forcegate(ipol,na) ! TB
         IF (lelfield)  force(ipol,na) = force(ipol,na) + forces_bp_efield(ipol,na)
-        IF (do_comp_mt)force(ipol,na) = force(ipol,na) + force_mt(ipol,na) 
+        IF (do_comp_mt)force(ipol,na) = force(ipol,na) + force_mt(ipol,na)
 
         sumfor = sumfor + force(ipol,na)
         !
@@ -306,7 +306,7 @@ SUBROUTINE forces()
         ! ... impose total force = 0 except in a QM-MM calculation
         !
         DO na = 1, nat
-           force(ipol,na) = force(ipol,na) - sumfor / DBLE( nat ) 
+           force(ipol,na) = force(ipol,na) - sumfor / DBLE( nat )
         END DO
         !
      ENDIF
@@ -464,7 +464,7 @@ SUBROUTINE forces()
   DEALLOCATE( forcenl, forcelc, forcecc, forceh, forceion, forcescc )
   IF ( llondon )  DEALLOCATE ( force_disp )
   IF ( ldftd3 ) DEALLOCATE ( force_d3 )
-  IF ( lxdm ) DEALLOCATE( force_disp_xdm ) 
+  IF ( lxdm ) DEALLOCATE( force_disp_xdm )
   IF ( lelfield ) DEALLOCATE ( forces_bp_efield )
   !
   lforce = .TRUE.

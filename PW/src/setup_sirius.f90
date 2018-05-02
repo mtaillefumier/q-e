@@ -35,6 +35,7 @@ subroutine setup_sirius()
   integer :: lmax_beta, zn
   logical(C_BOOL) bool_var
   INTEGER,EXTERNAL           :: set_hubbard_l,set_hubbard_n
+  real(8), external :: hubbard_occ
 
   !
   ! create context of simulation
@@ -146,11 +147,11 @@ subroutine setup_sirius()
      if (lda_plus_u_kind == 0) then
         call sirius_set_hubbard_simplified_method()
      endif
-     if (U_projection == 'ortho-atomic') then
+     if (U_projection == "ortho-atomic") then
         call sirius_set_orthogonalize_hubbard_orbitals()
      endif
 
-     if (U_projection == 'norm-atomic') then
+     if (U_projection == "norm-atomic") then
         call sirius_set_normalize_hubbard_orbitals()
      endif
   endif
@@ -225,7 +226,7 @@ subroutine setup_sirius()
 
     if (is_hubbard(iat)) then
        call sirius_set_atom_type_hubbard(c_str(atm(iat)), Hubbard_l(iat), &
-            set_hubbard_n(upf(iat)%psd), upf(iat)%oc(iwf), &
+            set_hubbard_n(upf(iat)%psd), hubbard_occ ( upf(iat)%psd ), &
             Hubbard_U(iat), Hubbard_J(1,iat), &
             Hubbard_alpha(iat), Hubbard_beta(iat), Hubbard_J0(iat))
     endif
