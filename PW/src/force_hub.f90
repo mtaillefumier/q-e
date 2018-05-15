@@ -62,8 +62,7 @@ SUBROUTINE force_hub(forceh)
       call sirius_get_forces(c_str("hubbard"), forceh(1, 1))
       forceh = forceh * 2 ! convert to Ry
       return
-   endif
-
+   else
    ldim= 2 * Hubbard_lmax + 1
    ALLOCATE ( dns(ldim,ldim,nspin,nat) )
    ALLOCATE ( spsi(npwx,nbnd) )
@@ -145,8 +144,8 @@ SUBROUTINE force_hub(forceh)
    DEALLOCATE( wfcatom  )
    DEALLOCATE( spsi  )
    DEALLOCATE( dns )
-
    IF (nspin == 1) forceh(:,:) = 2.d0 * forceh(:,:)
+endif
    !
    ! ...symmetrize...
    !
